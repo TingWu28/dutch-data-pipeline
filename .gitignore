@@ -1,0 +1,6 @@
+.venv/
+data/
+*.pdf
+__pycache__/
+*.pyc
+CV_TingWu_2026.md
