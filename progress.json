@@ -1,17 +1,28 @@
 {
   "start_date": "2026-04-17",
   "target_date": "2026-07-17",
-  "current_phase": 1,
-  "current_day": 1,
+  "current_phase": 2,
+  "current_day": 2,
   "current_week": 1,
-  "current_focus": "Day 1: Strategy + Tooling",
+  "current_focus": "Week 1: Advanced SQL + Python as engineer",
   "phase_2_schedule": {
-    "weeks_1_2": "Advanced SQL + Python as engineer",
+    "weeks_1_2": "Advanced SQL + Python as engineer + LeetCode 3x/week (easy→medium, Python)",
     "weeks_3_4": "dbt fundamentals + first dbt project",
     "weeks_5_6": "Airflow DAG design + Docker (run Airflow locally via Docker Compose)",
     "weeks_7_8": "Azure ADF/ADLS",
     "week_9": "AI/LLM integration layer"
   },
-  "weekly_log": [],
+  "weekly_log": [
+    {
+      "date": "2026-04-21",
+      "day": 2,
+      "completed": [
+        "Git repo setup, first commit + push to GitHub",
+        "Python virtual environment setup",
+        "KNMI ingestion script (fetch → parse → save CSV, 366 rows)",
+        "SQL window functions: AVG, ROW_NUMBER, LAG, CTEs"
+      ]
+    }
+  ],
   "job_analyses": []
 }
