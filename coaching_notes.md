@@ -102,4 +102,55 @@ def fetch_knmi_data(station_id, start_date, end_date):
 
 ## SQL — Window Functions
 
-_To be filled as we cover it._
+Window functions add a calculated column **without collapsing rows** (unlike GROUP BY).
+
+```sql
+-- GROUP BY: loses individual rows
+SELECT station_id, AVG(temperature) FROM daily_weather GROUP BY station_id
+
+-- WINDOW: keeps all rows, adds average alongside
+SELECT *, AVG(temperature) OVER () FROM daily_weather
+```
+
+### OVER() syntax
+
+```sql
+OVER ()                                          -- entire table as one window
+OVER (PARTITION BY station_id)                   -- reset window per station
+OVER (PARTITION BY station_id ORDER BY date)     -- ordered window per station
+```
+
+- `PARTITION BY` — splits into groups (keeps all rows, resets calculation per group)
+- `ORDER BY` — required for functions that depend on row order (ROW_NUMBER, LAG, LEAD)
+- No comma between PARTITION BY and ORDER BY — they are separate clauses
+
+### Key functions
+
+```sql
+-- ROW_NUMBER: numbers rows within each partition (needs ORDER BY)
+ROW_NUMBER() OVER (PARTITION BY station_id ORDER BY date)
+
+-- LAG: fetches value from N rows back (default 1). Needs ORDER BY.
+LAG(temperature) OVER (PARTITION BY station_id ORDER BY date)
+-- Always partition by the same group as your analysis — otherwise LAG bleeds across groups
+
+-- AVG/SUM/MIN/MAX: aggregate over the window (ORDER BY optional)
+AVG(temperature) OVER (PARTITION BY station_id)
+```
+
+### Pattern: CTE for derived columns
+
+You can't reference a window function alias in the same SELECT. Use a CTE:
+
+```sql
+WITH cte AS (
+    SELECT *, LAG(temperature) OVER (PARTITION BY station_id ORDER BY date) AS pre_temp
+    FROM daily_weather
+)
+SELECT *, temperature - pre_temp AS temp_change
+FROM cte
+```
+
+### Rule of thumb
+- Needs ORDER BY: `ROW_NUMBER`, `RANK`, `LAG`, `LEAD` — they care about sequence
+- ORDER BY optional: `AVG`, `SUM`, `MIN`, `MAX`, `COUNT` — they just aggregate
