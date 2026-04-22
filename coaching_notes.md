@@ -151,6 +151,21 @@ SELECT *, temperature - pre_temp AS temp_change
 FROM cte
 ```
 
+### Window frames — ROWS BETWEEN
+
+Defines exactly which rows the window covers. Used for rolling calculations:
+
+```sql
+-- 7-day rolling average
+AVG(TG) OVER (
+    PARTITION BY station_id
+    ORDER BY date
+    ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+)
+```
+
+**`ROWS BETWEEN` always requires `ORDER BY`** — without it, "6 preceding rows" is in undefined order. The result is meaningless and some engines will error. Always pair them.
+
 ### Rule of thumb
-- Needs ORDER BY: `ROW_NUMBER`, `RANK`, `LAG`, `LEAD` — they care about sequence
-- ORDER BY optional: `AVG`, `SUM`, `MIN`, `MAX`, `COUNT` — they just aggregate
+- Needs ORDER BY: `ROW_NUMBER`, `RANK`, `LAG`, `LEAD`, any `ROWS BETWEEN` — they care about sequence
+- ORDER BY optional: `AVG`, `SUM`, `MIN`, `MAX`, `COUNT` without a frame — they just aggregate
